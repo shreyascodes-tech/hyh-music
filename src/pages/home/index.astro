@@ -1,0 +1,63 @@
+---
+import { getHomeData } from "../../api/main";
+import HomeLayout from "../../layouts/HomeLayout.astro";
+
+const data: Record<string, string> = await getHomeData();
+
+const modules = Object.entries(data.modules as any).map(
+  // @ts-ignore
+  ([key, { title }]) => ({
+    key,
+    title: title as string,
+  })
+);
+
+const sections = modules.map(({ key, title }) => ({
+  title,
+  data: (data[key] as unknown as any[]).map(
+    ({ title = "", subtitle = "", image = "" }) => ({
+      title: title as string,
+      subtitle: subtitle as string,
+      image: image as string,
+    })
+  ),
+}));
+---
+
+<HomeLayout activeTab={0}>
+  {
+    sections.map(({ title, data }) => (
+      <section class="w-full my-3">
+        <h2 class="text-xl font-bold">{title}</h2>
+        <ul class="w-full overflow-auto hscroll flex flex-grow gap-12 p-4">
+          {data.map(({ image, title, subtitle }) => (
+            <li class="w-max flex flex-col gap-3">
+              <img
+                class="object-cover rounded-lg min-w-[200px]"
+                src={image}
+                alt={title}
+              />
+              <div>
+                <strong class="">{title.slice(0, 20)}</strong>
+                {subtitle && <p>{subtitle.slice(0, 12)}</p>}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</HomeLayout>
+
+<style>
+  .hscroll::-webkit-scrollbar {
+    height: 8px;
+  }
+  .hscroll::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+  .hscroll::-webkit-scrollbar-thumb {
+    background-color: #51617c;
+    border-radius: 8px;
+  }
+</style>

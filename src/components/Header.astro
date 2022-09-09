@@ -1,0 +1,38 @@
+---
+export interface Props {
+  links?: Record<string, string>;
+}
+const {
+  links = {
+    "/login": "Login",
+  },
+}: Props = Astro.props;
+---
+
+<header class="shadow bg-slate-800">
+  <div class="container flex items-center justify-between py-2 mx-auto">
+    <a
+      href="/"
+      class="px-4 py-3 transition-colors duration-100 rounded outline-none hover:bg-white/25 focus:bg-white/25"
+      ><strong>Hye Music</strong>
+    </a>
+    {
+      Object.keys(links).length > 0 && (
+        <nav>
+          <ul class="flex items-center">
+            {Object.entries(links).map(([path, text]) => (
+              <li>
+                <a
+                  class="block px-4 py-3 transition-colors duration-100 border-b-2 border-transparent outline-none hover:border-b-white focus:border-b-white"
+                  href={path}
+                >
+                  {text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )
+    }
+  </div>
+</header>

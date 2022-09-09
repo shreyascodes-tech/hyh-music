@@ -1,0 +1,32 @@
+---
+import Header, { Props as HeaderProps } from "../components/Header.astro";
+
+export interface Props {
+  title: string;
+  headerProps?: HeaderProps;
+}
+
+const { title, headerProps }: Props = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <script src="../scripts/router.ts"></script>
+    <title>{title}</title>
+  </head>
+  <body class="text-white bg-slate-900">
+    <Header {...headerProps} />
+    <main class="container p-4 mx-auto">
+      <slot />
+    </main>
+    <style>
+      body {
+        color-scheme: dark;
+      }
+    </style>
+  </body>
+</html>
