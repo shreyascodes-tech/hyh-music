@@ -36,7 +36,11 @@ const lyrics = song.hasLyrics ? await getLyrics(song.id) : [];
       ></audio>
 
       <div class="absolute right-3 top-0 bottom-0 w-12">
-        <select name="quality" class="opacity-0" id="quality-select">
+        <select
+          name="quality"
+          class="w-full h-full opacity-0"
+          id="quality-select"
+        >
           {
             qualities.map((q, i) => (
               <option selected={q === "160kbps"} value={q}>
