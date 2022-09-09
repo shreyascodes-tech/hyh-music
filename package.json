@@ -15,7 +15,6 @@
   },
   "devDependencies": {
     "@astrojs/deno": "^1.0.1",
-    "@astrojs/tailwind": "^1.0.0",
-    "svelte": "^3.46.4"
+    "@astrojs/tailwind": "^1.0.0"
   }
 }

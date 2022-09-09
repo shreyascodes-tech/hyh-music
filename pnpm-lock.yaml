@@ -5,7 +5,6 @@ specifiers:
   '@astrojs/tailwind': ^1.0.0
   astro: ^1.1.7
   flamethrower-router: 0.0.0-meme.12
-  svelte: ^3.46.4
 
 dependencies:
   astro: 1.1.7
@@ -14,7 +13,6 @@ dependencies:
 devDependencies:
   '@astrojs/deno': 1.0.1
   '@astrojs/tailwind': 1.0.0
-  svelte: 3.50.0
 
 packages:
 
@@ -2975,11 +2973,6 @@ packages:
   /supports-preserve-symlinks-flag/1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
-
-  /svelte/3.50.0:
-    resolution: {integrity: sha512-zXeOUDS7+85i+RxLN+0iB6PMbGH7OhEgjETcD1fD8ZrhuhNFxYxYEHU41xuhkHIulJavcu3PKbPyuCrBxdxskQ==}
-    engines: {node: '>= 8'}
-    dev: true
 
   /synckit/0.7.3:
     resolution: {integrity: sha512-jNroMv7Juy+mJ/CHW5H6TzsLWpa1qck6sCHbkv8YTur+irSq2PjbvmGnm2gy14BUQ6jF33vyR4DPssHqmqsDQw==}

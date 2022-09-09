@@ -1,0 +1,25 @@
+---
+import type { Song } from "../../api/main";
+
+export interface Props {
+  song: Song[];
+}
+
+const {
+  song: [song],
+}: Props = Astro.props;
+
+const imageUrl = () =>
+  (song.image as any).find((a: any) => a.quality === "500x500").link as string;
+
+const songUrl = () =>
+  song.downloadUrl.find((s) => s.quality === "160kbps")!.link;
+---
+
+<h1 class="text-center text-lg font-bold">{song.name}</h1>
+<div class="p-4">
+  <img class="max-w-full rounded-lg overflow-hidden" src={imageUrl()} alt="" />
+</div>
+<div class="p-4">
+  <audio controls src={songUrl()}></audio>
+</div>

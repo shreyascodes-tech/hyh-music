@@ -15,10 +15,12 @@ const modules = Object.entries(data.modules as any).map(
 const sections = modules.map(({ key, title }) => ({
   title,
   data: (data[key] as unknown as any[]).map(
-    ({ title = "", subtitle = "", image = "" }) => ({
+    ({ title = "", subtitle = "", image = "", id = "", type = "" }) => ({
       title: title as string,
       subtitle: subtitle as string,
       image: image as string,
+      id: id as string,
+      type: type as string,
     })
   ),
 }));
@@ -30,17 +32,22 @@ const sections = modules.map(({ key, title }) => ({
       <section class="w-full my-3">
         <h2 class="text-xl font-bold">{title}</h2>
         <ul class="w-full overflow-auto hscroll flex flex-grow gap-12 p-4">
-          {data.map(({ image, title, subtitle }) => (
-            <li class="w-max flex flex-col gap-3">
-              <img
-                class="object-cover rounded-lg min-w-[200px]"
-                src={image}
-                alt={title}
-              />
-              <div>
-                <strong class="">{title.slice(0, 20)}</strong>
-                {subtitle && <p>{subtitle.slice(0, 12)}</p>}
-              </div>
+          {data.map(({ image, title, subtitle, id, type }) => (
+            <li class="w-max">
+              <a
+                href={`/details?type=${type}&id=${id}`}
+                class="flex flex-col gap-3"
+              >
+                <img
+                  class="object-cover rounded-lg min-w-[200px]"
+                  src={image}
+                  alt={title}
+                />
+                <div>
+                  <strong class="">{title.slice(0, 20)}</strong>
+                  {subtitle && <p>{subtitle.slice(0, 12)}</p>}
+                </div>
+              </a>
             </li>
           ))}
         </ul>

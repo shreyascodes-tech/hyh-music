@@ -1,5 +1,53 @@
 import { ApiType, getEndpoint } from "./endpoints";
 
+export interface Song {
+  id: string;
+  name: string;
+  album: string;
+  year: string;
+  primary_artists: string;
+  primary_artists_id: string;
+  image: {
+    quality: string;
+    link: string;
+  }[];
+  label: string;
+  albumid: string;
+  language: string;
+  play_count: string;
+  copyright_text: string;
+  explicit_content: number;
+  has_lyrics: string;
+  release_date: string;
+  media_preview_url: string;
+  perma_url: string;
+  album_url: string;
+  duration: string;
+  downloadUrl: {
+    quality: string;
+    link: string;
+  }[];
+}
+
+export interface Album {
+  id: any;
+  name: any;
+  year: any;
+  playCount: any;
+  language: any;
+  explicitContent: any;
+  songCount: any;
+  primaryArtist: any;
+  image:
+    | boolean
+    | {
+        quality: string;
+        link: string;
+      }[];
+  url: string;
+  songs: Song[];
+}
+
 function request(path: string, init?: RequestInit) {
   return fetch(path, {
     headers: {
@@ -16,4 +64,118 @@ export async function getHomeData() {
   const endpoint = getEndpoint(true, ApiType.homeData);
   const data: any = await request(endpoint);
   return data;
+}
+
+const detailsEPs = {
+  album: (id: string) =>
+    getEndpoint(false, ApiType.albumDetails + `&albumid=${id}`),
+  song: (id: string) => getEndpoint(false, ApiType.songDetails + `&pids=${id}`),
+};
+
+const createImageLinks = (link: string) => {
+  if (!link) return false;
+
+  const qualities = ["50x50", "150x150", "500x500"];
+
+  return (
+    qualities.map((quality) => ({
+      quality,
+      link: link.replace("150x150", quality),
+    })) || false
+  );
+};
+
+const createDownloadLinks = (link: string) => {
+  if (!link) return false;
+
+  const qualities = [
+    { id: "_12", bitrate: "12kbps" },
+    { id: "_48", bitrate: "48kbps" },
+    { id: "_96", bitrate: "96kbps" },
+    { id: "_160", bitrate: "160kbps" },
+    { id: "_320", bitrate: "320kbps" },
+  ];
+
+  return (
+    qualities.map((quality) => ({
+      quality: quality.bitrate,
+      link: link
+        .replace("preview.saavncdn.com", "aac.saavncdn.com")
+        .replace("_96_p", quality.id),
+    })) || false
+  );
+};
+
+const transformData = {
+  album(album: any) {
+    const songsArray: any = [];
+
+    const albumPayload = {
+      id: album?.albumid || album?.id,
+      name: album.title,
+      year: album.year,
+      playCount: album.play_count,
+      language: album.language,
+      explicitContent: album.explicit_content,
+      songCount: album?.more_info?.song_count || album?.songs?.length,
+      primaryArtist:
+        album.primary_artists ||
+        album.more_info?.artistMap?.primary_artists[0]?.name,
+      image: createImageLinks(album.image),
+      url: album.perma_url,
+      songs: [] as Song[],
+    };
+
+    // if album details contain song list
+    if (album.songs) {
+      album.songs.forEach((song: any) =>
+        songsArray.push(this.oneSong(song) as never)
+      );
+      albumPayload.songs = songsArray;
+    }
+
+    return albumPayload;
+  },
+  oneSong(song: any) {
+    const songPayload = {
+      id: song.id,
+      name: song.song,
+      album: { id: song.albumid, name: song.album, url: song.album_url },
+      year: song.year,
+      releaseDate: song.release_date,
+      duration: song.duration,
+      label: song.label,
+      primaryArtists: song.primary_artists,
+      primaryArtistsId: song.primary_artists_id,
+      explicitContent: song.explicit_content,
+      playCount: song.play_count,
+      language: song.language,
+      hasLyrics: song.has_lyrics,
+      artist: song.primary_artists,
+      image: createImageLinks(song.image),
+      url: song.perma_url,
+      copyright: song.copyright_text,
+      downloadUrl: createDownloadLinks(song.media_preview_url),
+    };
+    return songPayload;
+  },
+  song({ songs }: any) {
+    const payload = [] as unknown[];
+
+    songs.forEach((song: Song) => {
+      payload.push(this.oneSong(song));
+    });
+
+    return payload;
+  },
+};
+
+export async function getDetails(type: string, id: string) {
+  if (!detailsEPs[type]) {
+    return null;
+  }
+  const endpoint = detailsEPs[type](id);
+  const data: any = await request(endpoint);
+
+  return transformData[type](data);
 }

@@ -1,0 +1,32 @@
+---
+import type { Album } from '../../api/main';
+
+export interface Props {
+  album: Album;
+}
+
+const { album }: Props = Astro.props;
+
+const imageUrl = () =>
+  (album.image as any).find((a: any) => a.quality === "500x500").link as string;
+---
+
+<h1 class="text-center text-lg font-bold">{album.name}</h1>
+{
+  Array.isArray(album.image) && (
+    <div class="p-4">
+      <img
+        class="max-w-full rounded-lg overflow-hidden"
+        src={imageUrl()}
+        alt=""
+      />
+    </div>
+    <ul class="flex flex-col gap-4 p-4">
+        {album.songs.map((song) => (
+            <li>
+                <a href={`/details?type=song&id=${song.id}`}>{song.name}</a>
+            </li>
+        ))}
+    </ul>
+  )
+}

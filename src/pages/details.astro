@@ -1,0 +1,18 @@
+---
+import { getDetails } from "../api/main";
+import AlbumDetails from "../components/details/AlbumDetails.astro";
+import SongDetails from "../components/details/SongDetails.astro";
+import MainLayout from "../layouts/MainLayout.astro";
+
+const search = new URL(Astro.request.url).searchParams;
+
+const type = search.get("type");
+const id = search.get("id");
+
+const details = await getDetails(type!, id!);
+---
+
+<MainLayout title="sdf">
+  {type === "album" ? <AlbumDetails album={details} /> : type === "song" ? <SongDetails song={details} /> : <p>{type}</p>
+  <p>{id}</p>}
+</MainLayout>
