@@ -48,6 +48,25 @@ export interface Album {
   songs: Song[];
 }
 
+export interface Playlist {
+  id: any;
+  name: any;
+  followerCount: any;
+  songCount: any;
+  fanCount: any;
+  username: any;
+  firstname: any;
+  lastname: any;
+  image:
+    | boolean
+    | {
+        quality: string;
+        link: string;
+      }[];
+  url: any;
+  songs: Song[];
+}
+
 function request(path: string, init?: RequestInit) {
   return fetch(path, {
     headers: {
@@ -70,6 +89,8 @@ const detailsEPs = {
   album: (id: string) =>
     getEndpoint(false, ApiType.albumDetails + `&albumid=${id}`),
   song: (id: string) => getEndpoint(false, ApiType.songDetails + `&pids=${id}`),
+  playlist: (id: string) =>
+    getEndpoint(false, ApiType.playlistDetails + `&listid=${id}`),
 };
 
 const createImageLinks = (link: string) => {
@@ -167,6 +188,33 @@ const transformData = {
     });
 
     return payload;
+  },
+  playlist(playlist: any) {
+    const songsArray = [] as Song[];
+
+    const playlistPayload = {
+      id: playlist.listid,
+      name: playlist.listname,
+      followerCount: playlist.follower_count,
+      songCount: playlist.list_count || playlist?.songs?.length,
+      fanCount: playlist.fan_count,
+      username: playlist.username,
+      firstname: playlist.firstname,
+      lastname: playlist.lastname,
+      image: createImageLinks(playlist.image),
+      url: playlist.perma_url,
+      songs: [] as Song[],
+    };
+
+    // if playlist details contain song list
+    if (playlist.songs) {
+      playlist.songs.forEach((song: Song) =>
+        songsArray.push(this.oneSong(song) as never)
+      );
+      playlistPayload.songs = songsArray;
+    }
+
+    return playlistPayload;
   },
 };
 

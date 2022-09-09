@@ -1,20 +1,23 @@
 ---
-import type { Album } from "../../api/main";
+import type { Playlist } from "../../api/main";
 
 export interface Props {
-  album: Album;
+  playlist: Playlist;
 }
 
-const { album }: Props = Astro.props;
+const { playlist }: Props = Astro.props;
+
+// console.log(playlist);
 
 const imageUrl = () =>
-  (album.image as any).find((a: any) => a.quality === "500x500").link as string;
+  (playlist.image as any).find((a: any) => a.quality === "500x500")
+    .link as string;
 ---
 
-<h1 class="text-center text-lg font-bold">{album.name}</h1>
+<h1 class="text-center text-lg font-bold">{playlist.name}</h1>
 <div class="flex flex-col items-center lg:flex-row lg:items-start">
   {
-    Array.isArray(album.image) && (
+    Array.isArray(playlist.image) && (
       <div class="p-4 lg:sticky lg:top-[100px]">
         <img
           class="max-w-full w-64 rounded-lg overflow-hidden"
@@ -27,7 +30,7 @@ const imageUrl = () =>
   <ul class="flex flex-col gap-4 p-4">
     <h2 class="text-lg font-bold self-center lg:self-start">Songs</h2>
     {
-      album.songs.map((song) => (
+      playlist.songs.map((song) => (
         <li class="flex items-center gap-3">
           <svg
             xmlns="http://www.w3.org/2000/svg"

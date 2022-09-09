@@ -1,6 +1,7 @@
 ---
 import { getDetails } from "../api/main";
 import AlbumDetails from "../components/details/AlbumDetails.astro";
+import PlaylistDetails from "../components/details/PlaylistDetails.astro";
 import SongDetails from "../components/details/SongDetails.astro";
 import MainLayout from "../layouts/MainLayout.astro";
 
@@ -13,6 +14,12 @@ const details = await getDetails(type!, id!);
 ---
 
 <MainLayout title="sdf">
-  {type === "album" ? <AlbumDetails album={details} /> : type === "song" ? <SongDetails song={details} /> : <p>{type}</p>
-  <p>{id}</p>}
+  {type === "album" ? 
+    <AlbumDetails album={details} /> : 
+      type === "song" ? 
+        <SongDetails song={details} /> : 
+          type === "playlist" ? <PlaylistDetails playlist={details} /> : (
+            <p>{type}</p>
+            <p>{id}</p>
+          )}
 </MainLayout>
