@@ -3,25 +3,27 @@ import { ApiType, getEndpoint } from "./endpoints";
 export interface Song {
   id: string;
   name: string;
-  album: string;
   year: string;
-  primary_artists: string;
-  primary_artists_id: string;
+  primaryArtists: string;
+  primaryArtistsId: string;
   image: {
     quality: string;
     link: string;
   }[];
   label: string;
-  albumid: string;
+  album: {
+    id: string;
+    name: string;
+    url: string;
+  };
   language: string;
-  play_count: string;
-  copyright_text: string;
-  explicit_content: number;
-  has_lyrics: string;
-  release_date: string;
-  media_preview_url: string;
-  perma_url: string;
-  album_url: string;
+  playCount: string;
+  copyright: string;
+  explicitContent: number;
+  hasLyrics: string;
+  releaseDate: string;
+  permaUrl: string;
+  albumUrl: string;
   duration: string;
   downloadUrl: {
     quality: string;
@@ -67,6 +69,17 @@ export interface Playlist {
   songs: Song[];
 }
 
+export interface Artist {
+  name: string;
+  image: string;
+  subtitle: string;
+  topSongs: {
+    id: string;
+    title: string;
+    image: string;
+  }[];
+}
+
 function request(path: string, init?: RequestInit) {
   return fetch(path, {
     headers: {
@@ -91,6 +104,8 @@ const detailsEPs = {
   song: (id: string) => getEndpoint(false, ApiType.songDetails + `&pids=${id}`),
   playlist: (id: string) =>
     getEndpoint(false, ApiType.playlistDetails + `&listid=${id}`),
+  artist: (id: string) =>
+    getEndpoint(true, ApiType.artistDetails + `&token=${id.split("/").pop()}`),
 };
 
 const createImageLinks = (link: string) => {
@@ -216,14 +231,59 @@ const transformData = {
 
     return playlistPayload;
   },
+  artist(artist: any) {
+    return {
+      name: artist.name as string,
+      subtitle: artist.subtitle as string,
+      image: artist.image as string,
+      topSongs: artist.topSongs as {
+        id: string;
+        title: string;
+        image: string;
+      }[],
+    };
+  },
 };
 
+export async function getFooterDetails() {
+  const endpoint = getEndpoint(true, ApiType.getFooterDetails);
+  const data: any = await request(endpoint);
+  return data as Record<
+    string,
+    {
+      id: string;
+      title: string;
+      action: string;
+    }[]
+  >;
+}
+
+export async function getArtists() {
+  const endpoint = getEndpoint(true, ApiType.artists);
+  const data: any = await request(endpoint);
+  return data["top_artists"] as {
+    artistid: string;
+    name: string;
+    image: string;
+    follower_count: string;
+    perma_url: string;
+  }[];
+}
+
 export async function getDetails(type: string, id: string) {
-  if (!detailsEPs[type]) {
+  if (!(detailsEPs as any)[type]) {
     return null;
   }
-  const endpoint = detailsEPs[type](id);
+  const endpoint = (detailsEPs as any)[type](id);
+
   const data: any = await request(endpoint);
 
-  return transformData[type](data);
+  return (transformData as any)[type](data);
+}
+
+export async function getLyrics(songId: string) {
+  const endpoint = getEndpoint(true, ApiType.lyrics + `&lyrics_id=${songId}`);
+  const data: any = await request(endpoint);
+  const lyrics = data.lyrics as string;
+  return lyrics.replace(/"/gi, "'").replace(/ {2}/gi, " ").split("<br>");
 }

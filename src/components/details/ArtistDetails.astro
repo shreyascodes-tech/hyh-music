@@ -1,0 +1,46 @@
+---
+import type { Artist } from "../../api/main";
+
+export interface Props {
+  artist: Artist;
+}
+
+const { artist }: Props = Astro.props;
+---
+
+<h1 class="text-center text-lg font-bold">{artist.name}</h1>
+<div class="flex flex-col items-center lg:flex-row lg:items-start">
+  <div class="p-4 lg:sticky lg:top-[100px]">
+    <img
+      class="max-w-full w-64 rounded-lg overflow-hidden"
+      src={artist.image.replace("150x150", "500x500")}
+      alt={artist.name}
+    />
+  </div>
+  <ul class="flex flex-col gap-4 p-4">
+    <h2 class="text-lg font-bold self-center lg:self-start">Top Songs</h2>
+    {
+      artist.topSongs.map((song) => (
+        <li class="flex items-center gap-3">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z"
+            />
+          </svg>
+
+          <a href={`/details?type=song&id=${song.id}`}>{song.title}</a>
+        </li>
+      ))
+    }
+    <p>-----</p>
+  </ul>
+</div>

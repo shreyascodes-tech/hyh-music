@@ -1,9 +1,11 @@
 ---
-import type { Song } from "../../api/main";
+import { getLyrics, Song } from "../../api/main";
 
 export interface Props {
   song: Song[];
 }
+
+const qualities = ["12kbps", "48kbps", "96kbps", "160kbps", "320kbps"];
 
 const {
   song: [song],
@@ -14,12 +16,55 @@ const imageUrl = () =>
 
 const songUrl = () =>
   song.downloadUrl.find((s) => s.quality === "160kbps")!.link;
+
+const lyrics = song.hasLyrics ? await getLyrics(song.id) : [];
 ---
 
-<h1 class="text-center text-lg font-bold">{song.name}</h1>
-<div class="p-4">
-  <img class="max-w-full rounded-lg overflow-hidden" src={imageUrl()} alt="" />
+<div class="flex flex-col items-center lg:flex-row lg:items-start">
+  <div class="flex flex-col items-center p-4 gap-4 lg:sticky lg:top-[100px]">
+    <h1 class="text-center text-2xl font-bold">{song.name}</h1>
+    <img
+      class="max-w-full w-64 rounded-lg overflow-hidden"
+      src={imageUrl()}
+      alt=""
+    />
+    <select name="quality" id="quality-select">
+      {
+        qualities.map((q) => (
+          <option selected={q === "160kbps"} value={q}>
+            {q}
+          </option>
+        ))
+      }
+    </select>
+    <audio autoplay id="main-audio" controls src={songUrl()}></audio>
+  </div>
+  {
+    song.hasLyrics && (
+      <div class="text-center text-lg mx-auto max-h-[40vh] lg:max-h-[85vh] overflow-auto p-4 bg-black/20 rounded">
+        <h2 class="my-4 text-xl font-bold">Lyrics</h2>
+        {lyrics.map((line) => (line === "" ? <br /> : <p>{line}</p>))}
+        <p>---</p>
+      </div>
+    )
+  }
 </div>
-<div class="p-4">
-  <audio controls src={songUrl()}></audio>
-</div>
+
+<script define:vars={{ song }}>
+  const qualitySelector = document.getElementById("quality-select");
+  const audioEl = document.getElementById("main-audio");
+  qualitySelector.addEventListener("change", (e) => {
+    const quality = e.target.value;
+    audioEl.pause();
+    const time = audioEl.currentTime;
+    audioEl.src = song.downloadUrl.find((s) => s.quality === quality).link;
+    audioEl.addEventListener(
+      "canplay",
+      () => {
+        audioEl.currentTime = time;
+        audioEl.play();
+      },
+      { once: true }
+    );
+  });
+</script>

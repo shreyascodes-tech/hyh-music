@@ -1,7 +1,21 @@
 ---
+import { getArtists } from "../../api/main";
 import HomeLayout from "../../layouts/HomeLayout.astro";
+
+const topArtists = await getArtists();
 ---
 
 <HomeLayout activeTab={2}>
-  <h1>Artists</h1>
+  <ul class="flex flex-wrap gap-9">
+    {
+      topArtists.map((artist) => (
+        <a href={`/details?type=artist&id=${artist.perma_url}`}>
+          <li class="flex flex-col gap-3 justify-center items-center overflow-hidden">
+            <img class="rounded-full" src={artist.image} alt={artist.name} />
+            <strong>{artist.name}</strong>
+          </li>
+        </a>
+      ))
+    }
+  </ul>
 </HomeLayout>
