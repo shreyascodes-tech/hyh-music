@@ -32,8 +32,12 @@ const lyrics = song.hasLyrics ? await getLyrics(song.id) : [];
     <div
       class="bg-[#3b3b3b] w-full pr-10 flex relative items-stretch rounded-full focus-within:ring-2 ring-offset-2 ring-offset-slate-900"
     >
-      <audio id="main-audio" class="outline-none" controls src={songUrl()}
-      ></audio>
+      <audio
+        autoplay
+        id="main-audio"
+        class="outline-none"
+        controls
+        src={songUrl()}></audio>
 
       <div class="absolute right-3 top-0 bottom-0 w-12">
         <select
