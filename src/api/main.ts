@@ -80,7 +80,8 @@ export interface Artist {
   }[];
 }
 
-async function request(path: string, init?: RequestInit) {
+let _try = 1;
+async function request(path: string, init?: RequestInit): Promise<any> {
   try {
     const data = await fetch(path, {
       headers: {
@@ -97,7 +98,16 @@ async function request(path: string, init?: RequestInit) {
 
     return JSON.parse(data);
   } catch (error) {
-    return {};
+    if (_try === 3) {
+      throw "Rate Limited";
+    }
+
+    _try++;
+    const now = new Date().toString();
+    return request(
+      path + `&tryy=${now.slice(now.length - 8, now.length - 1)}`,
+      init
+    );
   }
 }
 
