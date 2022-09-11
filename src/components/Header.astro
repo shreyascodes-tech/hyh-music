@@ -49,14 +49,22 @@ const isLoggedIn = cookies["user"];
         }
         <li>
           {
-            path !== "/login" && (
-              <a
-                class="block px-4 py-3 transition-colors duration-100 border-b-2 border-transparent outline-none hover:border-b-white focus:border-b-white"
-                href={isLoggedIn ? "/api/logout" : "/login"}
-              >
-                {isLoggedIn ? "Logout" : "Login"}
-              </a>
-            )
+            path !== "/login" &&
+              (isLoggedIn ? (
+                <form method="post" action="/api/logout">
+                  <button class="block px-4 py-3 transition-colors duration-100 border-b-2 border-transparent outline-none hover:border-b-white focus:border-b-white">
+                    Logout
+                  </button>
+                </form>
+              ) : (
+                <a
+                  data-cold
+                  class="block px-4 py-3 transition-colors duration-100 border-b-2 border-transparent outline-none hover:border-b-white focus:border-b-white"
+                  href={isLoggedIn ? "/api/logout" : "/login"}
+                >
+                  {isLoggedIn ? "Logout" : "Login"}
+                </a>
+              ))
           }
         </li>
       </ul>
