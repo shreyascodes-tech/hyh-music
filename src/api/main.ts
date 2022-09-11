@@ -81,7 +81,12 @@ export interface Artist {
 }
 
 let _try = 1;
+const cache = new Map<string, any>();
 async function request(path: string, init?: RequestInit): Promise<any> {
+  if (cache.has(path)) {
+    return cache.get(path)!;
+  }
+
   try {
     const data = await fetch(path, {
       headers: {
@@ -92,18 +97,20 @@ async function request(path: string, init?: RequestInit): Promise<any> {
       },
       mode: "no-cors",
       ...init,
-    }).then((r) => r.text());
-    console.log(path);
-    console.log(data);
+    }).then((r) => r.json());
+    cache.set(path, data);
 
-    return JSON.parse(data);
+    setTimeout(() => {
+      cache.delete(path);
+    }, 1000 * 60 * 60);
+    return data;
   } catch (error) {
     if (_try === 3) {
       throw "Rate Limited";
     }
 
     _try++;
-    const now = new Date().toString();
+    const now = Date.now().toString();
     return request(
       path + `&tryy=${now.slice(now.length - 8, now.length - 1)}`,
       init
