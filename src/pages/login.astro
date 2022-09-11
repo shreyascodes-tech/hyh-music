@@ -1,11 +1,26 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
+const { searchParams } = new URL(Astro.request.url);
+const error = searchParams.get("error");
+const from = searchParams.get("from");
 ---
 
-<MainLayout headerProps={{ links: {} }} title="Hye Music">
+<MainLayout title="Hye Music">
   <h1 class="my-4 text-3xl font-semibold text-center">Login</h1>
-  <form class="space-y-4">
+  <form method="post" action="/api/login" class="space-y-4">
+    {
+      error && (
+        <>
+          <div class="bg-red-600/10 text-center py-3 rounded border-2 border-red-400">
+            <p class="text-red-400">
+              {error === "invalidFields" ? "Invalid Credentials" : error}
+            </p>
+          </div>
+        </>
+      )
+    }
     <div class="flex flex-col max-w-[400px] mx-auto">
+      {from && <input type="hidden" name="from" value={from} />}
       <label for="email">E-Mail</label>
       <input
         class="px-4 py-2 mt-3 transition-shadow rounded outline-none ring-2 ring-green-700 invalid:ring-red-400 placeholder-shown:ring-blue-900/60 ring-offset-2 ring-offset-slate-900 bg-black/40 focus:bg-black/60 focus:ring-blue-700"

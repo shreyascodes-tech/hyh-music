@@ -1,42 +1,65 @@
 ---
-export interface Props {
-  links?: Record<string, string>;
-}
-const {
-  links = {
-    "/login": "Login",
-  },
-}: Props = Astro.props;
+import * as Cookie from "es-cookie";
 
 const path = new URL(Astro.request.url).pathname;
 
 const showIndex = path === "/" || path === "/login" || path === "";
+
+const cookies = Cookie.parse(Astro.request.headers.get("Cookie") ?? "");
+const isLoggedIn = cookies["user"];
 ---
 
+<script is:inline define:vars={{ isLoggedIn }}>
+  if (
+    isLoggedIn &&
+    (location.pathname === "/login" || location.pathname === "/")
+  ) {
+    location.pathname = "/home";
+  }
+  if (
+    !isLoggedIn &&
+    location.pathname !== "/login" &&
+    location.pathname !== "/"
+  ) {
+    location = new URL(`/login?from=${location.pathname}`, location);
+  }
+</script>
 <header class="shadow bg-slate-800 sticky z-10 top-0">
-  <div class="container flex items-center justify-between py-2 mx-auto">
+  <div
+    class="container flex flex-col md:flex-row items-center justify-between py-2 mx-auto"
+  >
     <a
       href={showIndex ? "/" : "/home"}
-      class="px-4 py-3 transition-colors duration-100 rounded outline-none hover:bg-white/25 focus:bg-white/25"
+      class="px-4 py-3 transition-colors duration-100 rounded outline-none hover:bg-white/25 focus:bg-white/25 self-center md:self-start"
       ><strong>Hyh Music</strong>
     </a>
-    {
-      Object.keys(links).length > 0 && (
-        <nav>
-          <ul class="flex items-center">
-            {Object.entries(links).map(([path, text]) => (
-              <li>
-                <a
-                  class="block px-4 py-3 transition-colors duration-100 border-b-2 border-transparent outline-none hover:border-b-white focus:border-b-white"
-                  href={path}
-                >
-                  {text}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      )
-    }
+
+    <nav>
+      <ul
+        class={`flex flex-wrap items-center justify-center ${
+          isLoggedIn ? "" : "md:ml-auto"
+        }`}
+      >
+        {
+          isLoggedIn && (
+            <p class="md:ml-auto md:mr-4 text-gray-400">
+              Welcome <span class="text-blue-400">{isLoggedIn}</span>
+            </p>
+          )
+        }
+        <li>
+          {
+            path !== "/login" && (
+              <a
+                class="block px-4 py-3 transition-colors duration-100 border-b-2 border-transparent outline-none hover:border-b-white focus:border-b-white"
+                href={isLoggedIn ? "/api/logout" : "/login"}
+              >
+                {isLoggedIn ? "Logout" : "Login"}
+              </a>
+            )
+          }
+        </li>
+      </ul>
+    </nav>
   </div>
 </header>

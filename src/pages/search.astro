@@ -7,7 +7,7 @@ const query = new URL(Astro.request.url).searchParams.get("q") ?? "";
 const data = await getAutoComplete(query);
 ---
 
-<MainLayout title="Hyh | search" headerProps={{ links: { "/": "Logout" } }}>
+<MainLayout title="Hyh | search">
   <form action="/search" id="search-form" class="max-w-lg mx-auto w-full">
     <input
       autocomplete="off"

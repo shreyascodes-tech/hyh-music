@@ -4,10 +4,12 @@ specifiers:
   '@astrojs/deno': ^1.0.1
   '@astrojs/tailwind': ^1.0.0
   astro: ^1.1.7
+  es-cookie: ^1.4.0
   flamethrower-router: 0.0.0-meme.12
 
 dependencies:
   astro: 1.1.7
+  es-cookie: 1.4.0
   flamethrower-router: 0.0.0-meme.12
 
 devDependencies:
@@ -1041,6 +1043,10 @@ packages:
 
   /eol/0.9.1:
     resolution: {integrity: sha512-Ds/TEoZjwggRoz/Q2O7SE3i4Jm66mqTDfmdHdq/7DKVk3bro9Q8h6WdXKdPqFLMoqxrDK5SVRzHVPOS6uuGtrg==}
+    dev: false
+
+  /es-cookie/1.4.0:
+    resolution: {integrity: sha512-V4bHxyGBmwwiV+CKTLUPLmwhcutTxGEC5n4HWaUDSnTvkNvfIjkMw8qIVTVgPeNCWojgR5IUzFnGenNvCoKQ5A==}
     dev: false
 
   /es-module-lexer/0.10.5:

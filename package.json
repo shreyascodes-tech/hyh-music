@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "astro": "^1.1.7",
+    "es-cookie": "^1.4.0",
     "flamethrower-router": "0.0.0-meme.12"
   },
   "devDependencies": {
