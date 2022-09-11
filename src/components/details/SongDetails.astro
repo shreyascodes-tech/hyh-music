@@ -111,6 +111,7 @@ const lyrics = song.hasLyrics ? await getLyrics(song.id) : [];
     title: song.name,
     album: song.album.name,
     artist: song.artist,
+
     artwork: song.image.map((s) => ({
       src: s.link,
       sizes: s.quality,
@@ -135,24 +136,45 @@ const lyrics = song.hasLyrics ? await getLyrics(song.id) : [];
     );
   });
 
+  audioEl.addEventListener("progress", () => {
+    navigator.mediaSession?.setPositionState({
+      duration: audioEl.duration,
+      playbackRate: audioEl.playbackRate,
+      position: audioEl.currentTime,
+    });
+  });
+
   const actionHandlers = [
-    // play
     [
       "play",
       async () => {
-        // play our audio
         await audioEl.play();
-        // set playback state
         navigator.mediaSession.playbackState = "playing";
       },
     ],
     [
       "pause",
       () => {
-        // pause out audio
         audioEl.pause();
-        // set playback state
         navigator.mediaSession.playbackState = "paused";
+      },
+    ],
+    [
+      "seekbackward",
+      () => {
+        audioEl.currentTime = Math.max(
+          audioEl.currentTime - offset,
+          audioEl.duration
+        );
+      },
+    ],
+    [
+      "seekforward",
+      (offset) => {
+        audioEl.currentTime = Math.min(
+          audioEl.currentTime + offset,
+          audioEl.duration
+        );
       },
     ],
   ];
