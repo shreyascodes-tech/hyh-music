@@ -111,7 +111,11 @@ const lyrics = song.hasLyrics ? await getLyrics(song.id) : [];
     title: song.name,
     album: song.album.name,
     artist: song.artist,
-    artwork: song.image.map((s) => ({ src: s.link, sizes: s.quality })),
+    artwork: song.image.map((s) => ({
+      src: s.link,
+      sizes: s.quality,
+      type: "image/jpg",
+    })),
   });
 
   audioEl.focus();
