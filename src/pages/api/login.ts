@@ -16,8 +16,8 @@ export async function post({ request: req }: { request: Request }) {
       new URL(
         "/login?error=" +
           encodeURI("Invalid email or password") +
-          "&" +
-          new URL(req.url).search,
+          "&from=" +
+          (from ? from : "/home"),
         req.url
       )
     );
