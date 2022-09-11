@@ -33,7 +33,7 @@ const lyrics = song.hasLyrics ? await getLyrics(song.id) : [];
       class="bg-[#3b3b3b] pr-10 flex relative items-stretch rounded-full focus-within:ring-2 ring-offset-2 ring-offset-slate-900"
     >
       <audio
-        {/* autoplay */}
+        autoplay
         id="main-audio"
         class="outline-none"
         controls
@@ -107,12 +107,11 @@ const lyrics = song.hasLyrics ? await getLyrics(song.id) : [];
   /** @type HTMLAudioElement */
   const audioEl = document.getElementById("main-audio");
 
-  console.log(song);
   navigator.mediaSession.metadata = new MediaMetadata({
     title: song.name,
     album: song.album.name,
     artist: song.artist,
-    artwork: song.image.map((s) => ({ src: s.link, size: s.quality })),
+    artwork: song.image.map((s) => ({ src: s.link, sizes: s.quality })),
   });
 
   audioEl.focus();
