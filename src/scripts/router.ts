@@ -1,7 +1,7 @@
 import flamethrower from "flamethrower-router";
 
 flamethrower({
-  log: true,
+  log: false,
   pageTransitions: false,
-  prefetch: "visible",
+  prefetch: "hover",
 });
