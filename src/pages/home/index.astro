@@ -57,8 +57,8 @@ const unsupportedTypes = ["radio_station", "show"]
                       alt={title}
                     />
                     <div>
-                      <strong class="">{title.slice(0, 20)}</strong>
-                      {subtitle && <p>{subtitle.slice(0, 12)}</p>}
+                      <strong set:html={title.slice(0, 20)}></strong>
+                      {subtitle && <p set:html={subtitle.slice(0, 12)}></p>}
                     </div>
                   </a>
                 </li>

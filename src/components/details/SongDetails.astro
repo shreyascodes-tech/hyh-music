@@ -23,17 +23,17 @@ const lyrics = song.hasLyrics ? await getLyrics(song.id) : [];
 
 <div class="flex flex-col items-center lg:flex-row lg:items-start">
   <div class="flex flex-col items-center p-4 gap-4 lg:sticky lg:top-[100px]">
-    <h1 class="text-center text-2xl font-bold">{song.name}</h1>
+    <h1 class="text-center text-2xl font-bold" set:html={song.name}></h1>
     <img
       class="max-w-full w-64 rounded-lg overflow-hidden"
       src={imageUrl()}
       alt=""
     />
     <div
-      class="bg-[#3b3b3b] w-full pr-10 flex relative items-stretch rounded-full focus-within:ring-2 ring-offset-2 ring-offset-slate-900"
+      class="bg-[#3b3b3b] pr-10 flex relative items-stretch rounded-full focus-within:ring-2 ring-offset-2 ring-offset-slate-900"
     >
       <audio
-        autoplay
+        {/* autoplay */}
         id="main-audio"
         class="outline-none"
         controls
@@ -80,18 +80,41 @@ const lyrics = song.hasLyrics ? await getLyrics(song.id) : [];
   </div>
   {
     song.hasLyrics && (
-      <div class="text-center text-lg mx-auto max-h-[40vh] lg:max-h-[85vh] overflow-auto p-4 bg-black/20 rounded">
+      <div class="text-center text-lg mx-auto max-h-[40vh] lg:max-h-[85vh] overflow-auto scroll p-4 bg-black/20 rounded">
         <h2 class="my-4 text-xl font-bold">Lyrics</h2>
-        {lyrics.map((line) => (line === "" ? <br /> : <p>{line}</p>))}
+        {lyrics.map((line) => (line === "" ? <br /> : <p set:html={line} />))}
         <p>---</p>
       </div>
     )
   }
 </div>
 
+<style>
+  .scroll::-webkit-scrollbar {
+    width: 8px;
+  }
+  .scroll::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+  .scroll::-webkit-scrollbar-thumb {
+    background-color: #51617c;
+    border-radius: 8px;
+  }
+</style>
+
 <script define:vars={{ song }}>
   const qualitySelector = document.getElementById("quality-select");
+  /** @type HTMLAudioElement */
   const audioEl = document.getElementById("main-audio");
+
+  console.log(song);
+  navigator.mediaSession.metadata = new MediaMetadata({
+    title: song.name,
+    album: song.album.name,
+    artist: song.artist,
+    artwork: song.image.map((s) => ({ src: s.link, size: s.quality })),
+  });
+
   audioEl.focus();
   qualitySelector.addEventListener("change", (e) => {
     const quality = e.target.value;
@@ -108,4 +131,34 @@ const lyrics = song.hasLyrics ? await getLyrics(song.id) : [];
       { once: true }
     );
   });
+
+  const actionHandlers = [
+    // play
+    [
+      "play",
+      async () => {
+        // play our audio
+        await audioEl.play();
+        // set playback state
+        navigator.mediaSession.playbackState = "playing";
+      },
+    ],
+    [
+      "pause",
+      () => {
+        // pause out audio
+        audioEl.pause();
+        // set playback state
+        navigator.mediaSession.playbackState = "paused";
+      },
+    ],
+  ];
+
+  for (const [action, handler] of actionHandlers) {
+    try {
+      navigator.mediaSession.setActionHandler(action, handler);
+    } catch (error) {
+      console.log(`The media session action "${action}" is not supported yet.`);
+    }
+  }
 </script>

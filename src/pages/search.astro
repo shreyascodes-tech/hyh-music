@@ -1,0 +1,77 @@
+---
+import { getAutoComplete } from "../api/main";
+import SearchResult from "../components/SearchResult.astro";
+import MainLayout from "../layouts/MainLayout.astro";
+
+const query = new URL(Astro.request.url).searchParams.get("q") ?? "";
+const data = await getAutoComplete(query);
+---
+
+<MainLayout title="Hyh | search" headerProps={{ links: { "/": "Logout" } }}>
+  <form action="/search" class="max-w-lg mx-auto w-full">
+    <input
+      class="w-full px-4 py-2 mt-3 ml-auto transition-shadow rounded outline-none ring-2 ring-transparent placeholder-shown:ring-blue-900/60 ring-offset-2 ring-offset-slate-900 bg-black/40 focus:bg-black/60 focus:ring-blue-700"
+      value={query}
+      name="q"
+      type="search"
+      placeholder="Search..."
+    />
+  </form>
+
+  {
+    query && (
+      <div class="mt-4 space-y-4">
+        {data.topQuery.length > 0 && (
+          <div>
+            <h2 class="font-bold text-2xl">Top Results</h2>
+            <ul class="mt-4 space-y-3">
+              {data.topQuery.map((r) => (
+                <SearchResult result={r} />
+              ))}
+            </ul>
+          </div>
+        )}
+        {data.songs.length > 0 && (
+          <div>
+            <h2 class="font-bold text-2xl">Songs</h2>
+            <ul class="mt-4 space-y-3">
+              {data.songs.map((r) => (
+                <SearchResult result={r} />
+              ))}
+            </ul>
+          </div>
+        )}
+        {data.playlists.length > 0 && (
+          <div>
+            <h2 class="font-bold text-2xl">Playlists</h2>
+            <ul class="mt-4 space-y-3">
+              {data.playlists.map((r) => (
+                <SearchResult result={r} />
+              ))}
+            </ul>
+          </div>
+        )}
+        {data.artists.length > 0 && (
+          <div>
+            <h2 class="font-bold text-2xl">Artists</h2>
+            <ul class="mt-4 space-y-3">
+              {data.artists.map((r) => (
+                <SearchResult result={r} />
+              ))}
+            </ul>
+          </div>
+        )}
+        {data.albums.length > 0 && (
+          <div>
+            <h2 class="font-bold text-2xl">Albums</h2>
+            <ul class="mt-4 space-y-3">
+              {data.albums.map((r) => (
+                <SearchResult result={r} />
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    )
+  }
+</MainLayout>

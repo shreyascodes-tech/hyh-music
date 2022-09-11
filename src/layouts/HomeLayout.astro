@@ -14,22 +14,17 @@ const tabs = [
 const { activeTab }: Props = Astro.props;
 ---
 
-<MainLayout
-  title={`Hye | ${tabs[activeTab][0]}`}
-  headerProps={{
-    links: {
-      "/": "Logout",
-    },
-  }}
->
-  <div class="flex items-center justify-center mb-6">
+<MainLayout title={`Hyh | ${tabs[activeTab][0]}`}>
+  <div
+    class="flex items-center justify-center mb-6 p-2 sticky top-[65px] bg-slate-900/50 backdrop-blur"
+  >
     <nav>
       <ul class="flex">
         {
           tabs.map(([title, path], i) => (
             <li>
               <a
-                class={`px-4 py-2 border-b-2 border-transparent transition-colors duration-100 cursor-pointer select-none ${
+                class={`block px-4 py-2 border-b-2 border-transparent transition-colors duration-100 cursor-pointer select-none ${
                   i === activeTab ? "font-bold border-white" : ""
                 }`}
                 href={`/home/${path}`}
@@ -41,11 +36,30 @@ const { activeTab }: Props = Astro.props;
         }
       </ul>
     </nav>
-    <!-- <input
-      class="block w-full max-w-lg px-4 py-2 mt-3 ml-auto transition-shadow rounded outline-none ring-2 ring-transparent placeholder-shown:ring-blue-900/60 ring-offset-2 ring-offset-slate-900 bg-black/40 focus:bg-black/60 focus:ring-blue-700"
-      type="search"
-      placeholder="Search..."
-    /> -->
+    <form action="/search" class="hidden lg:block max-w-lg ml-auto w-full">
+      <input
+        class="w-full px-4 py-2 ml-auto transition-shadow rounded outline-none ring-2 ring-transparent placeholder-shown:ring-blue-900/60 ring-offset-2 ring-offset-slate-900 bg-black/40 focus:bg-black/60 focus:ring-blue-700"
+        name="q"
+        type="search"
+        placeholder="Search..."
+      />
+    </form>
+    <a href="/search" title="Sreach" class="ml-auto lg:hidden">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="w-6 h-6"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+        ></path>
+      </svg>
+    </a>
   </div>
   <div>
     <slot />

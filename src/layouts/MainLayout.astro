@@ -16,7 +16,7 @@ const { title, headerProps }: Props = Astro.props;
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <!-- <script src="../scripts/router.ts"></script> -->
-    <title>{title}</title>
+    <title set:html={title}></title>
   </head>
   <body class="text-white bg-slate-900">
     <Header {...headerProps} />

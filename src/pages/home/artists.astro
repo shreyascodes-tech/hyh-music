@@ -6,7 +6,7 @@ const topArtists = await getArtists();
 ---
 
 <HomeLayout activeTab={2}>
-  <ul class="flex flex-wrap gap-9">
+  <ul class="flex flex-wrap gap-9 justify-evenly">
     {
       topArtists.map((artist) => (
         <a href={`/details?type=artist&id=${artist.perma_url}`}>

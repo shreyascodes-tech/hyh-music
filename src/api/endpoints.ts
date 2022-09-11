@@ -14,7 +14,7 @@ export const enum ApiType {
   playlistDetails = "playlist.getDetails",
 
   // details by link
-  artistDetails = "webapi.get&type=artist",
+  artistDetails = "webapi.get&type=artist&n_song=50",
   songDetailsByLink = "webapi.get&type=song",
   albumDetailsByLink = "webapi.get&type=album",
 

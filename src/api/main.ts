@@ -105,7 +105,10 @@ const detailsEPs = {
   playlist: (id: string) =>
     getEndpoint(false, ApiType.playlistDetails + `&listid=${id}`),
   artist: (id: string) =>
-    getEndpoint(true, ApiType.artistDetails + `&token=${id.split("/").pop()}`),
+    getEndpoint(
+      true,
+      ApiType.artistDetails + `&token=${id.split("/").pop()}&_n=20`
+    ),
 };
 
 const createImageLinks = (link: string) => {
@@ -286,4 +289,19 @@ export async function getLyrics(songId: string) {
   const data: any = await request(endpoint);
   const lyrics = data.lyrics as string;
   return lyrics.replace(/"/gi, "'").replace(/ {2}/gi, " ").split("<br>");
+}
+
+const supported = ["song", "album", "playlist", "artist"];
+export async function getAutoComplete(query: string) {
+  const endpoint = getEndpoint(false, ApiType.searchAll + `&query=${query}`);
+  const data: any = await request(endpoint);
+  return {
+    albums: (data.albums?.data as any[]) ?? [],
+    artists: (data.artists?.data as any[]) ?? [],
+    songs: (data.songs?.data as any[]) ?? [],
+    playlists: (data.playlists?.data as any[]) ?? [],
+    topQuery: ((data.topquery?.data as any[]) ?? []).filter((tq) =>
+      supported.includes(tq.type)
+    ),
+  };
 }

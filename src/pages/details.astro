@@ -16,7 +16,7 @@ const details = await getDetails(type!, id!);
 
 ---
 
-<MainLayout title="sdf">
+<MainLayout title={details.title ?? details.name ?? details?.[0]?.name ?? details?.[0]?.title ?? "Details"}>
   {type === "album" ? 
     <AlbumDetails album={details} /> : 
       type === "song" ? 

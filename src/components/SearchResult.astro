@@ -1,0 +1,26 @@
+---
+export interface Props {
+  result: any;
+}
+
+const { result }: Props = Astro.props;
+---
+
+<li>
+  <a
+    class="flex gap-6 items-center px-6 py-3 hover:bg-white/20 rounded"
+    href={`/details?type=${result.type}&id=${
+      result.type === "artist" ? result.url : result.id
+    }`}
+  >
+    <img
+      class="block w-20 rounded-full ring"
+      src={result.image.replace("50x50", "150x150")}
+      alt={result.title}
+    />
+    <div>
+      <h3 class="font-semibold text-lg" set:html={result.title}></h3>
+      <p class="font-thin">{result.type}</p>
+    </div>
+  </a>
+</li>
