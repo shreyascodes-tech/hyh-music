@@ -80,8 +80,8 @@ export interface Artist {
   }[];
 }
 
-function request(path: string, init?: RequestInit) {
-  return fetch(path, {
+async function request(path: string, init?: RequestInit) {
+  const data = await fetch(path, {
     headers: {
       "X-Requested-With": "XMLHttpRequest",
       Accept: "application/json, text/plain, */*",
@@ -90,7 +90,10 @@ function request(path: string, init?: RequestInit) {
     },
     mode: "no-cors",
     ...init,
-  }).then((r) => r.json());
+  }).then((r) => r.text());
+  console.log(data);
+
+  return JSON.parse(data);
 }
 
 export async function getHomeData() {
