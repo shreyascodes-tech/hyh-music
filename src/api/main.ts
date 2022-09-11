@@ -81,19 +81,24 @@ export interface Artist {
 }
 
 async function request(path: string, init?: RequestInit) {
-  const data = await fetch(path, {
-    headers: {
-      "X-Requested-With": "XMLHttpRequest",
-      Accept: "application/json, text/plain, */*",
-      "Cache-Control": "no-cache",
-      Cookie: "L=telugu",
-    },
-    mode: "no-cors",
-    ...init,
-  }).then((r) => r.text());
-  console.log(data);
+  try {
+    const data = await fetch(path, {
+      headers: {
+        "X-Requested-With": "XMLHttpRequest",
+        Accept: "application/json, text/plain, */*",
+        "Cache-Control": "no-cache",
+        Cookie: "L=telugu",
+      },
+      mode: "no-cors",
+      ...init,
+    }).then((r) => r.text());
+    console.log(path);
+    console.log(data);
 
-  return JSON.parse(data);
+    return JSON.parse(data);
+  } catch (error) {
+    return {};
+  }
 }
 
 export async function getHomeData() {
