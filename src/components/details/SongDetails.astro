@@ -150,6 +150,11 @@ const lyrics = song.hasLyrics ? await getLyrics(song.id) : [];
       async () => {
         await audioEl.play();
         navigator.mediaSession.playbackState = "playing";
+        navigator.mediaSession?.setPositionState({
+          duration: audioEl.duration,
+          playbackRate: audioEl.playbackRate,
+          position: audioEl.currentTime,
+        });
       },
     ],
     [
@@ -157,6 +162,11 @@ const lyrics = song.hasLyrics ? await getLyrics(song.id) : [];
       () => {
         audioEl.pause();
         navigator.mediaSession.playbackState = "paused";
+        navigator.mediaSession?.setPositionState({
+          duration: audioEl.duration,
+          playbackRate: audioEl.playbackRate,
+          position: audioEl.currentTime,
+        });
       },
     ],
     [
@@ -166,6 +176,11 @@ const lyrics = song.hasLyrics ? await getLyrics(song.id) : [];
           audioEl.currentTime - offset,
           audioEl.duration
         );
+        navigator.mediaSession?.setPositionState({
+          duration: audioEl.duration,
+          playbackRate: audioEl.playbackRate,
+          position: audioEl.currentTime,
+        });
       },
     ],
     [
@@ -175,6 +190,11 @@ const lyrics = song.hasLyrics ? await getLyrics(song.id) : [];
           audioEl.currentTime + offset,
           audioEl.duration
         );
+        navigator.mediaSession?.setPositionState({
+          duration: audioEl.duration,
+          playbackRate: audioEl.playbackRate,
+          position: audioEl.currentTime,
+        });
       },
     ],
   ];
