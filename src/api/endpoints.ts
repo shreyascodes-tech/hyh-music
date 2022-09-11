@@ -4,10 +4,6 @@ const BaseUrl =
 export const enum ApiType {
   // search
   searchAll = "autocomplete.get",
-  searchSong = "search.getResults", // supports pagination
-  searchAlbum = "search.getAlbumResults", // supports pagination
-  searchArtist = "search.getArtistResults", // supports pagination
-
   // details by id
   songDetails = "song.getDetails",
   albumDetails = "content.getAlbumDetails",
@@ -18,10 +14,7 @@ export const enum ApiType {
   songDetailsByLink = "webapi.get&type=song",
   albumDetailsByLink = "webapi.get&type=album",
 
-  // list
   homeData = "webapi.getLaunchData",
-  charts = "content.getCharts",
-  trending = "content.getTrending",
   albums = "content.getAlbums", // supports pagination
   lyrics = "lyrics.getLyrics",
   playlists = "content.getFeaturedPlaylists&fetch_from_serialized_files=true", // supports pagination
