@@ -189,7 +189,7 @@ const transformData = {
       explicitContent: song.explicit_content,
       playCount: song.play_count,
       language: song.language,
-      hasLyrics: song.has_lyrics,
+      hasLyrics: song.has_lyrics === "true",
       artist: song.primary_artists,
       image: createImageLinks(song.image),
       url: song.perma_url,
