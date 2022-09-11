@@ -8,8 +8,9 @@ const data = await getAutoComplete(query);
 ---
 
 <MainLayout title="Hyh | search" headerProps={{ links: { "/": "Logout" } }}>
-  <form action="/search" class="max-w-lg mx-auto w-full">
+  <form action="/search" id="search-form" class="max-w-lg mx-auto w-full">
     <input
+      autocomplete="off"
       class="w-full px-4 py-2 mt-3 ml-auto transition-shadow rounded outline-none ring-2 ring-transparent placeholder-shown:ring-blue-900/60 ring-offset-2 ring-offset-slate-900 bg-black/40 focus:bg-black/60 focus:ring-blue-700"
       value={query}
       name="q"
@@ -18,60 +19,189 @@ const data = await getAutoComplete(query);
     />
   </form>
 
+  <template id="search-results-section">
+    <div>
+      <h2 class="font-bold text-2xl"></h2>
+      <ul class="mt-4 space-y-3"></ul>
+    </div>
+  </template>
+  <template id="search-result-section">
+    <SearchResult result={{}} />
+  </template>
   {
-    query && (
-      <div class="mt-4 space-y-4">
-        {data.topQuery.length > 0 && (
-          <div>
-            <h2 class="font-bold text-2xl">Top Results</h2>
-            <ul class="mt-4 space-y-3">
-              {data.topQuery.map((r) => (
-                <SearchResult result={r} />
-              ))}
-            </ul>
-          </div>
-        )}
-        {data.songs.length > 0 && (
-          <div>
-            <h2 class="font-bold text-2xl">Songs</h2>
-            <ul class="mt-4 space-y-3">
-              {data.songs.map((r) => (
-                <SearchResult result={r} />
-              ))}
-            </ul>
-          </div>
-        )}
-        {data.playlists.length > 0 && (
-          <div>
-            <h2 class="font-bold text-2xl">Playlists</h2>
-            <ul class="mt-4 space-y-3">
-              {data.playlists.map((r) => (
-                <SearchResult result={r} />
-              ))}
-            </ul>
-          </div>
-        )}
-        {data.artists.length > 0 && (
-          <div>
-            <h2 class="font-bold text-2xl">Artists</h2>
-            <ul class="mt-4 space-y-3">
-              {data.artists.map((r) => (
-                <SearchResult result={r} />
-              ))}
-            </ul>
-          </div>
-        )}
-        {data.albums.length > 0 && (
-          <div>
-            <h2 class="font-bold text-2xl">Albums</h2>
-            <ul class="mt-4 space-y-3">
-              {data.albums.map((r) => (
-                <SearchResult result={r} />
-              ))}
-            </ul>
-          </div>
+    (
+      <div class="mt-4 space-y-4" id="search-results">
+        {query ? (
+          <>
+            {data.topQuery.length > 0 && (
+              <div>
+                <h2 class="font-bold text-2xl">Top Results</h2>
+                <ul class="mt-4 space-y-3">
+                  {data.topQuery.map((r) => (
+                    <SearchResult result={r} />
+                  ))}
+                </ul>
+              </div>
+            )}
+            {data.songs.length > 0 && (
+              <div>
+                <h2 class="font-bold text-2xl">Songs</h2>
+                <ul class="mt-4 space-y-3">
+                  {data.songs.map((r) => (
+                    <SearchResult result={r} />
+                  ))}
+                </ul>
+              </div>
+            )}
+            {data.playlists.length > 0 && (
+              <div>
+                <h2 class="font-bold text-2xl">Playlists</h2>
+                <ul class="mt-4 space-y-3">
+                  {data.playlists.map((r) => (
+                    <SearchResult result={r} />
+                  ))}
+                </ul>
+              </div>
+            )}
+            {data.artists.length > 0 && (
+              <div>
+                <h2 class="font-bold text-2xl">Artists</h2>
+                <ul class="mt-4 space-y-3">
+                  {data.artists.map((r) => (
+                    <SearchResult result={r} />
+                  ))}
+                </ul>
+              </div>
+            )}
+            {data.albums.length > 0 && (
+              <div>
+                <h2 class="font-bold text-2xl">Albums</h2>
+                <ul class="mt-4 space-y-3">
+                  {data.albums.map((r) => (
+                    <SearchResult result={r} />
+                  ))}
+                </ul>
+              </div>
+            )}
+          </>
+        ) : (
+          <p class="text-center">Start typing to get Results...</p>
         )}
       </div>
     )
   }
 </MainLayout>
+
+<script>
+  function debounce<T extends Function>(this: any, func: T, timeout = 150): T {
+    let timer: number;
+    return ((...args: []) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        func.apply(this, args as any);
+      }, timeout);
+    }) as any;
+  }
+
+  const searchForm = document.getElementById("search-form") as HTMLFormElement;
+  const searchResultsTemplate = document.getElementById(
+    "search-results-section"
+  ) as HTMLTemplateElement;
+  const searchResTemplate = document.getElementById(
+    "search-result-section"
+  ) as HTMLTemplateElement;
+
+  const resultsContainer = document.getElementById(
+    "search-results"
+  ) as HTMLDivElement;
+
+  searchForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+  });
+
+  function createResultElement(result: any) {
+    const resEl = searchResTemplate.content.cloneNode(true) as DocumentFragment;
+
+    const linkEl = resEl.querySelector("a")!;
+    const imgEl = resEl.querySelector("img")!;
+    const titleEl = resEl.querySelector("h3")!;
+    const subTitleEl = resEl.querySelector("p")!;
+
+    linkEl.href = `/details?type=${result?.type}&id=${
+      result?.type === "artist" ? result?.url : result?.id
+    }`;
+    imgEl.src = result?.image?.replace("50x50", "150x150");
+    imgEl.alt = result?.title;
+    titleEl.innerHTML = result?.title;
+    subTitleEl.innerHTML = result?.type;
+
+    return resEl;
+  }
+
+  function createResultsSection(title: string, children: DocumentFragment[]) {
+    const section = searchResultsTemplate.content.cloneNode(
+      true
+    ) as DocumentFragment;
+    const titleEl = section.querySelector("h2")!;
+    const ul = section.querySelector("ul")!;
+
+    titleEl.innerHTML = title;
+
+    for (const child of children) {
+      ul.appendChild(child);
+    }
+
+    return section;
+  }
+
+  const search = debounce(async (query: string) => {
+    resultsContainer.innerHTML = '<p class="text-center">Loading...</p>';
+    const res = (await fetch(`/api/search?q=${query}`).then((r) =>
+      r.json()
+    )) as {
+      albums: any[];
+      artists: any[];
+      songs: any[];
+      playlists: any[];
+      topQuery: any[];
+    };
+    console.log("hi");
+    resultsContainer.innerHTML = "";
+
+    res.topQuery.length > 0 &&
+      resultsContainer.appendChild(
+        createResultsSection(
+          "Top Results",
+          res.topQuery.map(createResultElement)
+        )
+      );
+    res.songs.length > 0 &&
+      resultsContainer.appendChild(
+        createResultsSection("Songs", res.songs.map(createResultElement))
+      );
+    res.playlists.length > 0 &&
+      resultsContainer.appendChild(
+        createResultsSection(
+          "Playlists",
+          res.playlists.map(createResultElement)
+        )
+      );
+    res.artists.length > 0 &&
+      resultsContainer.appendChild(
+        createResultsSection("Artists", res.artists.map(createResultElement))
+      );
+    res.albums.length > 0 &&
+      resultsContainer.appendChild(
+        createResultsSection("Albums", res.albums.map(createResultElement))
+      );
+  });
+
+  searchForm.querySelector("input")!.addEventListener("input", (e) => {
+    if (!(e.target as any).value) {
+      resultsContainer.innerHTML =
+        '<p class="text-center">Start typing to get Results...</p>';
+      return;
+    }
+    search((e.target as any).value);
+  });
+</script>

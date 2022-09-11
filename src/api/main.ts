@@ -88,6 +88,7 @@ function request(path: string, init?: RequestInit) {
       "Cache-Control": "no-cache",
       Cookie: "L=telugu",
     },
+    mode: "no-cors",
     ...init,
   }).then((r) => r.json());
 }
