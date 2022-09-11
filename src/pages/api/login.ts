@@ -13,7 +13,13 @@ export async function post({ request: req }: { request: Request }) {
 
   if (email !== "test@test.com" || password !== "12345678") {
     return Response.redirect(
-      new URL("/login?error=" + encodeURI("Invalid email or password"), req.url)
+      new URL(
+        "/login?error=" +
+          encodeURI("Invalid email or password") +
+          "&" +
+          new URL(req.url).search,
+        req.url
+      )
     );
   }
 
