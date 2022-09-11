@@ -3,5 +3,31 @@ import MainLayout from "../layouts/MainLayout.astro";
 ---
 
 <MainLayout title="Hyh Music">
-  <h1>Hello, World!</h1>
+  <div
+    class="w-full md:min-h-[80vh] flex flex-col md:flex-row justify-evenly items-center"
+  >
+    <img src="/images/logo.png" alt="Hyh Music" />
+    <div>
+      <h1 class="text-6xl font-semibold text-center lg:text-left">
+        Experience the <span class="font-[cursive] text-pink-400 font-bold"
+          >HIH</span
+        ><span class="text-5xl">s</span>
+        <br /> of your life 😁
+      </h1>
+      <div class="flex flex-wrap justify-center lg:justify-start gap-6 mt-8">
+        <a
+          class="px-4 py-2 text-pink-400 brightness-95 hover:brightness-110 hover:bg-white/20 bg-transparent border-2 border-current rounded transition-all duration-100"
+          href="/home"
+        >
+          Explore Trending
+        </a>
+        <a
+          class="px-4 py-2 bg-transparent brightness-95 hover:brightness-110 hover:bg-white/20 border-2 border-current rounded transition-all duration-100"
+          href="/home"
+        >
+          Pick your Mood
+        </a>
+      </div>
+    </div>
+  </div>
 </MainLayout>

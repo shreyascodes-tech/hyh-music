@@ -1,7 +1,76 @@
 ---
 import HomeLayout from "../../layouts/HomeLayout.astro";
+
+const moods = [
+  {
+    href: "/details?type=playlist&id=154070911",
+    img: [
+      "/images/hh-removebg-preview.webp",
+      "/images/hhh-removebg-preview.webp",
+    ],
+    title: "Happy",
+  },
+  {
+    href: "/details?type=playlist&id=802336660",
+    img: [
+      "/images/SAD-removebg-preview.webp",
+      "/images/SADD-removebg-preview.webp",
+    ],
+    title: "Sad",
+  },
+  {
+    href: "/details?type=playlist&id=100294896",
+    img: [
+      "/images/tt-removebg-preview.webp",
+      "/images/uu-removebg-preview.webp",
+    ],
+    title: "Party",
+  },
+  {
+    href: "/details?type=playlist&id=928501607",
+    img: [
+      "/images/ll-removebg-preview.webp",
+      "/images/lll-removebg-preview.webp",
+    ],
+    title: "Love",
+  },
+  {
+    href: "/details?type=album&id=31942150",
+    img: [
+      "/images/dd-removebg-preview.webp",
+      "/images/gg-removebg-preview.webp",
+    ],
+    title: "Devotional",
+  },
+];
 ---
 
 <HomeLayout activeTab={1}>
-  <h1>Moods</h1>
+  <h1 class="text-3xl font-bold mb-4">Songs based on your mood!!!</h1>
+  <ul class="flex flex-wrap justify-center gap-8">
+    {
+      moods.map((mood) => (
+        <li>
+          <a
+            href={mood.href}
+            class="flex flex-col items-center gap-3 p-4 rounded-lg transition-colors duration-100 hover:bg-white/20 group"
+          >
+            <div class="relative w-48 h-48">
+              <img
+                class="absolute w-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-100 group-hover:opacity-0 transition-opacity"
+                src={mood.img[0]}
+                alt={mood.title}
+              />
+              <img
+                class="absolute w-full opacity-0 group-hover:opacity-100 transition-opacity"
+                src={mood.img[1]}
+                alt={mood.title}
+              />
+            </div>
+            <p class="text-xl font-semibold">{mood.title}</p>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
 </HomeLayout>
